@@ -1,0 +1,28 @@
+import 'package:flutter/material.dart';
+import 'package:recipe_demo_flutter/features/homepage.dart';
+import 'package:recipe_demo_flutter/services/database_service.dart';
+import 'package:recipe_demo_flutter/services/recipe_type_loader.dart';
+
+Future<void> main() async {
+    WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseService.init();
+  await RecipeTypeLoader.loadRecipeTypesFromJson();
+  runApp(const MyApp());
+}
+//2:50pm, 10/5/25
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}

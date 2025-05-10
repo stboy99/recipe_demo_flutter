@@ -1,0 +1,100 @@
+// screens/recipe_detail_screen.dart
+import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:recipe_demo_flutter/features/recipe/model/recipe.dart';
+import 'package:recipe_demo_flutter/features/recipe/screens/recipe_update_create.dart';
+import 'package:recipe_demo_flutter/services/database_service.dart';
+import 'dart:io';
+
+class RecipeDetailScreen extends StatelessWidget {
+  final Recipe recipe;
+
+  RecipeDetailScreen({required this.recipe});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(recipe.title),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () => _navigateToEditRecipe(context),
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () => _deleteRecipe(context),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            recipe.imagePath != null
+                ? Image.file(File(recipe.imagePath!), height: 200, width: double.infinity, fit: BoxFit.cover)
+                : Container(
+                    height: 200,
+                    color: Colors.grey[200],
+                    child: Center(child: Icon(Icons.fastfood, size: 100)),
+                  ),
+            SizedBox(height: 16),
+            Text('Type: ${recipe.type.name}', style: Theme.of(context).textTheme.titleMedium),
+            SizedBox(height: 24),
+            Text('Ingredients', style: Theme.of(context).textTheme.titleLarge),
+            ...recipe.ingredients.map((ingredient) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Text('- $ingredient'),
+            )).toList(),
+            SizedBox(height: 24),
+            Text('Steps', style: Theme.of(context).textTheme.titleLarge),
+            ...recipe.steps.asMap().entries.map((entry) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Step ${entry.key + 1}', style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(entry.value),
+                ],
+              ),
+            )).toList(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _navigateToEditRecipe(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddEditRecipeScreen(recipe: recipe),
+      ),
+    );
+  }
+
+  void _deleteRecipe(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Delete Recipe'),
+        content: Text('Are you sure you want to delete this recipe?'),
+        actions: [
+          TextButton(
+            child: Text('Cancel'),
+            onPressed: () => Navigator.pop(context),
+          ),
+          TextButton(
+            child: Text('Delete', style: TextStyle(color: Colors.red)),
+            onPressed: () {
+              DatabaseService.recipesBox.delete(recipe.id);
+              Navigator.pop(context); // Close dialog
+              Navigator.pop(context); // Go back to list
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
