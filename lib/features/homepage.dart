@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
 import 'package:recipe_demo_flutter/features/recipe/screens/recipe_list_screen.dart';
 import 'package:recipe_demo_flutter/global_structure.dart';
 
@@ -47,25 +48,51 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future<void> _signOut() async {
-    setState(() => _isLoading = true);
-    try {
-      if(FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser!.isAnonymous){
-        FirebaseAuth.instance.currentUser!.delete();
-      }
-      await FirebaseAuth.instance.signOut();
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error signing out: ${e.toString()}')),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+Future<void> _signOut() async {
+  setState(() => _isLoading = true);
+  try {
+    // Show feature in progress message
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Sorry, this feature is still in progress')),
+      );
+    }
+
+    await _clearLocalDatabase();
+
+    // Handle anonymous user deletion
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null && user.isAnonymous) {
+      await user.delete();
+    }
+
+    // Sign out
+    await FirebaseAuth.instance.signOut();
+  } catch (e) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error signing out: ${e.toString()}')),
+      );
+    }
+  } finally {
+    if (mounted) {
+      setState(() => _isLoading = false);
     }
   }
+}
+
+
+Future<void> _clearLocalDatabase() async {
+  final List<String> boxNames = ['recipes', 'recipeTypes']; // add all used boxes
+
+  for (var name in boxNames) {
+    final box = await Hive.openBox(name);
+    await box.clear();
+    await box.close(); // optional: closes the box
+  }
+}
+
+
 
   Widget _buildWelcomeCard() {
     return Card(

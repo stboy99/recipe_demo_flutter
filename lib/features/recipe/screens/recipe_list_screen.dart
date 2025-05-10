@@ -102,19 +102,24 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   }
 
   Widget _buildRecipeList() {
+      final user = FirebaseAuth.instance.currentUser;
+  if (user == null) throw 'user not login';
     return ValueListenableBuilder<Box<Recipe>>(
       valueListenable: DatabaseService.recipesBox.listenable(),
       builder: (context, box, _) {
         final recipes = box.values.toList();
         
         var filteredRecipes = recipes.where((recipe) {
+          recipe.userId == user.uid;
           final matchesType = _selectedType == null || 
               recipe.type.id == _selectedType!.id;
           final matchesSearch = _searchController.text.isEmpty ||
               recipe.title.toLowerCase().contains(_searchController.text.toLowerCase());
           return matchesType && matchesSearch;
         }).toList();
-        
+        if(filteredRecipes.isEmpty){
+          return Text('no recipe so far.. why dont you add some?');
+        }
         return ListView.builder(
           itemCount: filteredRecipes.length,
           itemBuilder: (context, index) {

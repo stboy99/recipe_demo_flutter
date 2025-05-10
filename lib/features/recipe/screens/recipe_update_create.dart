@@ -1,4 +1,5 @@
 // screens/add_edit_recipe_screen.dart
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -30,7 +31,7 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
     super.initState();
     _titleController = TextEditingController(text: widget.recipe?.title ?? '');
     
-    // _selectedType = widget.recipe?.type.name.toString();
+    _selectedType = widget.recipe?.type;
     
     if (widget.recipe != null) {
       for (final ingredient in widget.recipe!.ingredients) {
@@ -136,28 +137,48 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
     );
   }
 
-  Widget _buildTypeDropdown() {
-    return ValueListenableBuilder<Box<RecipeType>>(
-      valueListenable: DatabaseService.recipeTypesBox.listenable(),
-      builder: (context, box, _) {
-        final types = box.values.toList();
-        
-        return DropdownButtonFormField<RecipeType>(
-          value:(widget.recipe != null && types.any((value) => value.name == widget.recipe!.type.name.toString())) ? widget.recipe!.type : null,
-          items: types.map((type) => DropdownMenuItem<RecipeType>(
-            value: type,
-            child: Text(type.name),
-          )).toList(),
-          onChanged: (type) => setState(() => _selectedType = type),
-          decoration: InputDecoration(
-            labelText: 'Recipe Type',
-            border: OutlineInputBorder(),
-          ),
-          validator: (value) => value == null ? 'Please select a type' : null,
+Widget _buildTypeDropdown() {
+  return ValueListenableBuilder<Box<RecipeType>>(
+    valueListenable: DatabaseService.recipeTypesBox.listenable(),
+    builder: (context, box, _) {
+      final types = box.values.toList();
+      
+      // Helper function to capitalize first letter
+      String capitalize(String input) {
+        if (input.isEmpty) return input;
+        return input[0].toUpperCase() + input.substring(1);
+      }
+
+      // Get initial value with null checks
+      RecipeType? initialValue;
+      if (widget.recipe != null && widget.recipe!.type.name != null) {
+        final recipeTypeName = widget.recipe!.type.name.toString();
+        initialValue = types.firstWhere(
+          (type) => type.name.toLowerCase() == recipeTypeName.toLowerCase(),
+          orElse: () => types.first, // Fallback if not found
         );
-      },
-    );
-  }
+      }
+
+      return DropdownButtonFormField<RecipeType>(
+        value: initialValue,
+        items: types.map((type) => DropdownMenuItem<RecipeType>(
+          value: type,
+          child: Text(
+            type.name.isNotEmpty 
+              ? capitalize(type.name) 
+              : 'Unnamed Type',
+          ),
+        )).toList(),
+        onChanged: (type) => setState(() => _selectedType = type),
+        decoration: const InputDecoration(
+          labelText: 'Recipe Type',
+          border: OutlineInputBorder(),
+        ),
+        validator: (value) => value == null ? 'Please select a type' : null,
+      );
+    },
+  );
+}
 
   List<Widget> _buildIngredientFields() {
     return List<Widget>.generate(_ingredientControllers.length, (index) {
@@ -227,6 +248,8 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
 
   void _saveRecipe() {
     // print(_selectedType);
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('User not logged in');
     if (_formKey.currentState!.validate() && _selectedType != null) {
       final ingredients = _ingredientControllers
           .map((controller) => controller.text)
@@ -242,12 +265,14 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
         type: _selectedType!,
         ingredients: ingredients,
         steps: steps,
+        userId: user.uid
       );
       
       DatabaseService.recipesBox.put(recipe.id, recipe);
       context.pop(true);
-      context.pop();
-
+      if(widget.recipe != null){
+       context.pop();
+      }
       Future.microtask(() {
         if(mounted){
           context.push(

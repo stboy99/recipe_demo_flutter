@@ -27,6 +27,8 @@ class Recipe {
   @HiveField(6)
   final DateTime createdAt;
 
+  @HiveField(7) // New field
+  final String userId; // Add this field
   Recipe({
     required this.id,
     required this.title,
@@ -34,6 +36,7 @@ class Recipe {
     required this.type,
     required this.ingredients,
     required this.steps,
+    required this.userId,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 }
