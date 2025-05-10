@@ -30,8 +30,9 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() => _isLoading = true);
     try {
       await FirebaseAuth.instance.signInAnonymously();
-      if(user != null && _nameController.text.isNotEmpty){
-        await user!.updateDisplayName(_nameController.text);
+      Future.delayed(Duration(milliseconds: 190));
+      if(FirebaseAuth.instance.currentUser != null){
+        await FirebaseAuth.instance.currentUser!.updateDisplayName(_nameController.text);
       }
     } catch (e) {
       if (mounted) {
