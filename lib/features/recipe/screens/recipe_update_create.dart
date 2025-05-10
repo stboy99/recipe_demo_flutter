@@ -29,7 +29,8 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.recipe?.title ?? '');
-    _selectedType = widget.recipe?.type;
+    
+    // _selectedType = widget.recipe?.type.name.toString();
     
     if (widget.recipe != null) {
       for (final ingredient in widget.recipe!.ingredients) {
@@ -142,7 +143,7 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
         final types = box.values.toList();
         
         return DropdownButtonFormField<RecipeType>(
-          value: _selectedType,
+          value:(widget.recipe != null && types.any((value) => value.name == widget.recipe!.type.name.toString())) ? widget.recipe!.type : null,
           items: types.map((type) => DropdownMenuItem<RecipeType>(
             value: type,
             child: Text(type.name),
@@ -225,6 +226,7 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
   }
 
   void _saveRecipe() {
+    // print(_selectedType);
     if (_formKey.currentState!.validate() && _selectedType != null) {
       final ingredients = _ingredientControllers
           .map((controller) => controller.text)
@@ -244,6 +246,16 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
       
       DatabaseService.recipesBox.put(recipe.id, recipe);
       context.pop(true);
+      context.pop();
+
+      Future.microtask(() {
+        if(mounted){
+          context.push(
+            '/recipe-detail',
+            extra: {'recipe': recipe},
+          );
+        }
+      });
     }
   }
 

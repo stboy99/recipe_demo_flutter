@@ -2,26 +2,26 @@
     {
       "id": "1",
       "name": "Breakfast",
-      "icon": "breakfast"
+      "icon": "Breakfast"
     },
     {
       "id": "2",
       "name": "Lunch",
-      "icon": "lunch"
+      "icon": "Lunch"
     },
     {
       "id": "3",
       "name": "Dinner",
-      "icon": "dinner"
+      "icon": "Linner"
     },
     {
       "id": "4",
       "name": "Dessert",
-      "icon": "dessert"
+      "icon": "Dessert"
     },
     {
       "id": "5",
       "name": "Appetizer",
-      "icon": "appetizer"
+      "icon": "Appetizer"
     }
   ]
