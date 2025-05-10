@@ -33,9 +33,6 @@ class _MyHomePageState extends State<MyHomePage> {
       if(user != null && _nameController.text.isNotEmpty){
         await user!.updateDisplayName(_nameController.text);
       }
-      // if (mounted) {
-      //   context.push('/recipe-list');
-      // }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -48,16 +45,35 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }
   }
-
+void showSorryDialog(){
+      if (mounted) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text('Sorry!'),
+        content: Text('This is a demo version, and data will be clear upon signout. We are making our way to the feature!'),
+        actions: [
+          TextButton(
+            child: Text('Cancel'),
+            onPressed: () => context.pop(true),
+          ),
+          TextButton(
+            child: Text('yes proceed', style: TextStyle(color: Colors.red)),
+            onPressed: () {
+              _signOut();
+            },
+          ),
+        ],
+      ),
+    );
+    }
+}
 Future<void> _signOut() async {
+  context.pop();
+  _nameController.text = '';
   setState(() => _isLoading = true);
   try {
-    // Show feature in progress message
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sorry, by signout all data will be clear, storing by account feature incoming!!')),
-      );
-    }
 
     await _clearLocalDatabase();
 
@@ -175,7 +191,8 @@ Future<void> _clearLocalDatabase() async {
                             return;
                         }
                         _signInAnonymously();
-                      } else {
+                      }
+                      else{
                         context.push('/recipe-list');
                       }
                     },
@@ -200,9 +217,9 @@ Future<void> _clearLocalDatabase() async {
             const SizedBox(height: 16),
             if(FirebaseAuth.instance.currentUser != null)
               TextButton(
-                onPressed: _isLoading ? null : _signOut,
+                onPressed: _isLoading ? null : showSorryDialog,
                 child: const Text(
-                  'Sign Out',
+                  'No Byebye!',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.red,

@@ -73,6 +73,7 @@ class RecipeDetailScreen extends StatelessWidget {
   void _deleteRecipe(BuildContext context) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Text('Delete Recipe'),
         content: Text('Are you sure you want to delete this recipe?'),
