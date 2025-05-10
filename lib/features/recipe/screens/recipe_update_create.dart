@@ -79,6 +79,7 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
               _buildTypeDropdown(),
               SizedBox(height: 16),
               Text('Ingredients', style: Theme.of(context).textTheme.titleLarge),
+              SizedBox(height: 16),
               ..._buildIngredientFields(),
               IconButton(
                 icon: Icon(Icons.add),
@@ -90,6 +91,7 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
               ),
               SizedBox(height: 16),
               Text('Steps', style: Theme.of(context).textTheme.titleLarge),
+              SizedBox(height: 16),
               ..._buildStepFields(),
               IconButton(
                 icon: Icon(Icons.add),
@@ -185,13 +187,16 @@ Widget _buildTypeDropdown() {
       return Row(
         children: [
           Expanded(
-            child: TextFormField(
-              controller: _ingredientControllers[index],
-              decoration: InputDecoration(
-                labelText: 'Ingredient ${index + 1}',
-                border: OutlineInputBorder(),
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
+              child: TextFormField(
+                controller: _ingredientControllers[index],
+                decoration: InputDecoration(
+                  labelText: 'Ingredient ${index + 1}',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) => value!.isEmpty ? 'Please enter ingredient' : null,
               ),
-              validator: (value) => value!.isEmpty ? 'Please enter ingredient' : null,
             ),
           ),
           IconButton(
@@ -212,14 +217,17 @@ Widget _buildTypeDropdown() {
       return Row(
         children: [
           Expanded(
-            child: TextFormField(
-              controller: _stepControllers[index],
-              maxLines: 3,
-              decoration: InputDecoration(
-                labelText: 'Step ${index + 1}',
-                border: OutlineInputBorder(),
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
+              child: TextFormField(
+                controller: _stepControllers[index],
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: 'Step ${index + 1}',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) => value!.isEmpty ? 'Please enter step' : null,
               ),
-              validator: (value) => value!.isEmpty ? 'Please enter step' : null,
             ),
           ),
           IconButton(
