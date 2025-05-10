@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "889574139781",
+    "project_id": "fir-recipe-flutter",
+    "storage_bucket": "fir-recipe-flutter.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:889574139781:android:6555c3fcb2a7573efb46ec",
+        "android_client_info": {
+          "package_name": "com.example.recipe_demo_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhgQcfw_9hpWasfaez48vCQ8S7YYyA1ME"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

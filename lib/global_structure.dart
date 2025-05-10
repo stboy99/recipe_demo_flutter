@@ -44,11 +44,11 @@ class _GlobalStructureState extends State<GlobalStructure> {
         padding: const EdgeInsets.all(16.0),
         child: widget.body,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        child: const Icon(Icons.add),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _incrementCounter,
+      //   backgroundColor: Theme.of(context).colorScheme.secondary,
+      //   child: const Icon(Icons.add),
+      // ),
     );
   }
 }

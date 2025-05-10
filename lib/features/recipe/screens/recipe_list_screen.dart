@@ -1,6 +1,7 @@
 // screens/recipe_list_screen.dart
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -37,25 +38,31 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: _buildTypeDropdown(),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  flex: 2,
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      labelText: 'Search',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (_) => setState(() {}),
+            child: Column(
+              children:[ 
+                Text('Hi! ${FirebaseAuth.instance.currentUser!.displayName}!'),
+                SizedBox(height: 20,),
+                Row(
+                children: [
+                  Expanded(
+                    child: _buildTypeDropdown(),
                   ),
-                ),
-              ],
+                  SizedBox(width: 10),
+                  Expanded(
+                    flex: 2,
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        labelText: 'Search',
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (_) => setState(() {}),
+                    ),
+                  ),
+                ],
+              ),
+              ]
             ),
           ),
           Expanded(
