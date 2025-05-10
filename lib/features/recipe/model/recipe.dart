@@ -27,8 +27,8 @@ class Recipe {
   @HiveField(6)
   final DateTime createdAt;
 
-  @HiveField(7) // New field
-  final String userId; // Add this field
+  @HiveField(7)
+  final String userId;
   Recipe({
     required this.id,
     required this.title,

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
+import 'package:recipe_demo_flutter/features/recipe/model/recipe.dart';
 import 'package:recipe_demo_flutter/features/recipe/screens/recipe_list_screen.dart';
 import 'package:recipe_demo_flutter/global_structure.dart';
 
@@ -54,7 +55,7 @@ Future<void> _signOut() async {
     // Show feature in progress message
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sorry, this feature is still in progress')),
+        const SnackBar(content: Text('Sorry, by signout all data will be clear, storing by account feature incoming!!')),
       );
     }
 
@@ -81,16 +82,19 @@ Future<void> _signOut() async {
   }
 }
 
-
 Future<void> _clearLocalDatabase() async {
-  final List<String> boxNames = ['recipes', 'recipeTypes']; // add all used boxes
+  try {
+    // Assuming the boxes are already opened elsewhere in your app
+    final recipesBox = Hive.box<Recipe>('recipes');
+    // final settingsBox = Hive.box('recipeTypes');
 
-  for (var name in boxNames) {
-    final box = await Hive.openBox(name);
-    await box.clear();
-    await box.close(); // optional: closes the box
+    await recipesBox.clear();
+    // await settingsBox.clear();
+  } catch (e) {
+    debugPrint('Failed to clear Hive boxes: $e');
   }
 }
+
 
 
 
@@ -164,6 +168,12 @@ Future<void> _clearLocalDatabase() async {
                   ? null
                   : () {
                       if (FirebaseAuth.instance.currentUser == null) {
+                        if(_nameController.text.isEmpty){
+                                ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Can i get your beautiful name?')),
+                            );
+                            return;
+                        }
                         _signInAnonymously();
                       } else {
                         context.push('/recipe-list');
