@@ -1,5 +1,6 @@
 // screens/add_edit_recipe_screen.dart
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:recipe_demo_flutter/features/recipe/model/recipe.dart';
@@ -10,7 +11,7 @@ import 'dart:io';
 class AddEditRecipeScreen extends StatefulWidget {
   final Recipe? recipe;
 
-  AddEditRecipeScreen({this.recipe});
+  const AddEditRecipeScreen({super.key, this.recipe});
 
   @override
   _AddEditRecipeScreenState createState() => _AddEditRecipeScreenState();
@@ -242,7 +243,7 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
       );
       
       DatabaseService.recipesBox.put(recipe.id, recipe);
-      Navigator.pop(context);
+      context.pop(true);
     }
   }
 

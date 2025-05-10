@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:recipe_demo_flutter/features/recipe/screens/recipe_list_screen.dart';
 import 'package:recipe_demo_flutter/global_structure.dart';
 
@@ -21,7 +22,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  final int _counter = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +48,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   const SizedBox(height: 12),
                   const Text(
-                    'Enter to create your desired recipe now!',
+                    "Don't know what to eat?",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    ' Enter to create your desired recipe now!',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
@@ -57,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () {
-                      // TODO: Add navigation or functionality
+                      context.push('/recipe-list');
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
@@ -73,12 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => RecipeListScreen(),
-                        ),
-                      );
+
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),

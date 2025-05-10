@@ -1,0 +1,43 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:recipe_demo_flutter/features/homepage.dart';
+import 'package:recipe_demo_flutter/features/recipe/screens/recipe_detail_screen.dart';
+import 'package:recipe_demo_flutter/features/recipe/screens/recipe_list_screen.dart';
+import 'package:recipe_demo_flutter/features/recipe/screens/recipe_update_create.dart';
+
+final GoRouter router = GoRouter(
+  routes: <RouteBase>[
+    GoRoute(
+      path: '/',
+      builder: (BuildContext context, GoRouterState state) {
+        // final args = state.extra as Map<String, dynamic>;
+        return MyHomePage(title: 'Home',);
+      },
+      routes: <RouteBase>[
+        GoRoute(
+          path: 'recipe-list',
+          builder: (BuildContext context, GoRouterState state) {
+            return const RecipeListScreen();
+          },
+        ),
+        GoRoute(
+          path: 'recipe-detail',
+          builder: (BuildContext context, GoRouterState state) {
+            final args = state.extra as Map<String, dynamic>;
+            return RecipeDetailScreen(recipe: args['recipe'],);
+          },
+        ),
+        GoRoute(
+          path: 'recipe-update-create',
+          builder: (BuildContext context, GoRouterState state) {
+            final args = state.extra as Map<String, dynamic>?;
+            if(args != null){
+              return AddEditRecipeScreen(recipe: args['recipe'],);
+            }
+            return AddEditRecipeScreen();
+          },
+        ),
+      ],
+    ),
+  ],
+);

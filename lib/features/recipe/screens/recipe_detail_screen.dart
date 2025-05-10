@@ -1,5 +1,6 @@
 // screens/recipe_detail_screen.dart
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:recipe_demo_flutter/features/recipe/model/recipe.dart';
 import 'package:recipe_demo_flutter/features/recipe/screens/recipe_update_create.dart';
@@ -9,7 +10,7 @@ import 'dart:io';
 class RecipeDetailScreen extends StatelessWidget {
   final Recipe recipe;
 
-  RecipeDetailScreen({required this.recipe});
+  const RecipeDetailScreen({super.key, required this.recipe});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,7 @@ class RecipeDetailScreen extends StatelessWidget {
             ...recipe.ingredients.map((ingredient) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Text('- $ingredient'),
-            )).toList(),
+            )),
             SizedBox(height: 24),
             Text('Steps', style: Theme.of(context).textTheme.titleLarge),
             ...recipe.steps.asMap().entries.map((entry) => Padding(
@@ -58,7 +59,7 @@ class RecipeDetailScreen extends StatelessWidget {
                   Text(entry.value),
                 ],
               ),
-            )).toList(),
+            )),
           ],
         ),
       ),
@@ -66,12 +67,7 @@ class RecipeDetailScreen extends StatelessWidget {
   }
 
   void _navigateToEditRecipe(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AddEditRecipeScreen(recipe: recipe),
-      ),
-    );
+    context.push('/recipe-update-create', extra: {'recipe': recipe});
   }
 
   void _deleteRecipe(BuildContext context) {
@@ -83,14 +79,14 @@ class RecipeDetailScreen extends StatelessWidget {
         actions: [
           TextButton(
             child: Text('Cancel'),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(true),
           ),
           TextButton(
             child: Text('Delete', style: TextStyle(color: Colors.red)),
             onPressed: () {
               DatabaseService.recipesBox.delete(recipe.id);
-              Navigator.pop(context); // Close dialog
-              Navigator.pop(context); // Go back to list
+              context.pop();
+              context.pop();
             },
           ),
         ],

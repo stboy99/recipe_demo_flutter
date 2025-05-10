@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_demo_flutter/features/homepage.dart';
+import 'package:recipe_demo_flutter/routing.dart';
 import 'package:recipe_demo_flutter/services/database_service.dart';
 import 'package:recipe_demo_flutter/services/recipe_type_loader.dart';
 
@@ -17,12 +18,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: router,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }

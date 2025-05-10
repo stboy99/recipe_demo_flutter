@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:recipe_demo_flutter/features/recipe/model/recipe_type.dart';
 import 'package:recipe_demo_flutter/features/recipe/model/recipe.dart';
@@ -10,6 +11,8 @@ import 'package:recipe_demo_flutter/features/recipe/screens/recipe_update_create
 import 'package:recipe_demo_flutter/services/database_service.dart';
 
 class RecipeListScreen extends StatefulWidget {
+  const RecipeListScreen({super.key});
+
   @override
   _RecipeListScreenState createState() => _RecipeListScreenState();
 }
@@ -79,7 +82,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
             ...types.map((type) => DropdownMenuItem<RecipeType>(
               value: type,
               child: Text(type.name),
-            )).toList(),
+            )),
           ],
           onChanged: (type) => setState(() => _selectedType = type),
           decoration: InputDecoration(
@@ -124,19 +127,10 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   }
 
   void _navigateToAddRecipe(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AddEditRecipeScreen(),
-      ),
-    );
+    context.push('/recipe-update-create');
   }
 
   void _navigateToRecipeDetail(BuildContext context, Recipe recipe) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RecipeDetailScreen(recipe: recipe),
-    ));
+    context.push('/recipe-detail', extra: {'recipe': recipe});
   }
 }
