@@ -1,16 +1,9 @@
 # recipe_demo_flutter
 
-A new Flutter project.
+I developed this version for Android due to time constraints and device availability, but the architecture and tooling support iOS equally. I’m confident in delivering the same experience on iOS — and I can walk you through what I’d adapt if needed.
 
-## Getting Started
+kindly
+flutter pub get
+flutter run
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+jia sian
