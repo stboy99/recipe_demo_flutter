@@ -44,7 +44,6 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                   Expanded(
                     child: _buildTypeDropdown(),
                   ),
-                  SizedBox(width: 10),
                   Expanded(
                     flex: 2,
                     child: TextField(
