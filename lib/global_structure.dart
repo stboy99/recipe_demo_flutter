@@ -15,14 +15,6 @@ class GlobalStructure extends StatefulWidget {
 }
 
 class _GlobalStructureState extends State<GlobalStructure> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,11 +36,6 @@ class _GlobalStructureState extends State<GlobalStructure> {
         padding: const EdgeInsets.all(16.0),
         child: widget.body,
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _incrementCounter,
-      //   backgroundColor: Theme.of(context).colorScheme.secondary,
-      //   child: const Icon(Icons.add),
-      // ),
     );
   }
 }
