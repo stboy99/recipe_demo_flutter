@@ -17,7 +17,11 @@ class RecipeDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlobalStructure(
       title: recipe.title,
-     body: SingleChildScrollView(
+      action: IconButton(
+        icon: Icon(Icons.delete),
+        onPressed: () => _deleteRecipe(context),
+      ),
+      body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
