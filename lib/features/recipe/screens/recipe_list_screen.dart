@@ -9,6 +9,7 @@ import 'package:recipe_demo_flutter/features/recipe/model/recipe_type.dart';
 import 'package:recipe_demo_flutter/features/recipe/model/recipe.dart';
 import 'package:recipe_demo_flutter/features/recipe/screens/recipe_detail_screen.dart';
 import 'package:recipe_demo_flutter/features/recipe/screens/recipe_update_create.dart';
+import 'package:recipe_demo_flutter/global_structure.dart';
 import 'package:recipe_demo_flutter/services/database_service.dart';
 
 class RecipeListScreen extends StatefulWidget {
@@ -24,15 +25,11 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Recipes'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _navigateToAddRecipe(context),
-          ),
-        ],
+    return GlobalStructure(
+      title: 'Recipes',
+      action: IconButton(
+        icon: Icon(Icons.add),
+        onPressed: () => _navigateToAddRecipe(context),
       ),
       body: Column(
         children: [

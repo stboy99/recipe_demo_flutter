@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class GlobalStructure extends StatefulWidget {
   final String title;
   final Widget body;
+  final Widget? action;
 
   const GlobalStructure({
     super.key,
     required this.title,
     required this.body,
+    this.action
   });
 
   @override
@@ -15,14 +17,6 @@ class GlobalStructure extends StatefulWidget {
 }
 
 class _GlobalStructureState extends State<GlobalStructure> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,16 +33,12 @@ class _GlobalStructureState extends State<GlobalStructure> {
         elevation: 4,
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        actions: widget.action != null ? [widget.action!] : [],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: widget.body,
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _incrementCounter,
-      //   backgroundColor: Theme.of(context).colorScheme.secondary,
-      //   child: const Icon(Icons.add),
-      // ),
     );
   }
 }
