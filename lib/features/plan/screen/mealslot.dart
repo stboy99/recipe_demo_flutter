@@ -21,7 +21,9 @@ class MealCalendarScreen extends StatefulWidget {
 }
 
 class _MealCalendarScreenState extends State<MealCalendarScreen> {
-  final List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  int weekOffset = 0;
+  List<String> get days => getWeekDays(weekOffset: weekOffset);
+  // final List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   final List<String> meals = ['Breakfast', 'Lunch', 'Dinner'];
 
   Map<String, Map<String, String?>> mealPlan = {};
@@ -55,7 +57,7 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
   }
 
   Widget _buildMealCell(String day, String meal) {
-    final recipe = mealPlan[day]![meal];
+    final recipe = mealPlan[day] != null ? mealPlan[day]![meal] : 'Tap to assign';
     return GestureDetector(
       onTap: () => _assignMeal(day, meal),
       child: Container(
@@ -89,6 +91,15 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
     );
   }
 
+  List<String> getWeekDays({int weekOffset = 0}) {
+    final now = DateTime.now();
+    final monday = now.subtract(Duration(days: now.weekday - 1)).add(Duration(days: weekOffset * 7));
+    return List.generate(7, (i) {
+      final day = monday.add(Duration(days: i));
+      return "${day.month}/${day.day}"; // e.g. 5/15
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,10 +110,33 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
         padding: const EdgeInsets.all(12.0),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: Row(
-            // mainAxisSize: MainAxisSize.min,
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: days.map((day) => _buildDayColumn(day)).toList(),
+            children:[ 
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () => setState(() => weekOffset--),
+                  ),
+                  Text(
+                    'Week of ${days.first} - ${days.last}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.arrow_forward),
+                    onPressed: () => setState(() => weekOffset++),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                // mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: days.map((day) => _buildDayColumn(day)).toList(),
+              )
+            ],
           ),
         ),
       ),
