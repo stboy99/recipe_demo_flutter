@@ -277,6 +277,14 @@ Future<void> _clearLocalDatabase() async {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.push('/meal-plan');
+        },
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: const Icon(Icons.lock_clock, color: Colors.white,),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // Position
     );
   }
 }

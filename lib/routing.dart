@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:recipe_demo_flutter/features/homepage.dart';
+import 'package:recipe_demo_flutter/features/plan/screen/mealslot.dart';
 import 'package:recipe_demo_flutter/features/recipe/screens/recipe_detail_screen.dart';
 import 'package:recipe_demo_flutter/features/recipe/screens/recipe_list_screen.dart';
 import 'package:recipe_demo_flutter/features/recipe/screens/recipe_update_create.dart';
@@ -27,6 +28,14 @@ final GoRouter router = GoRouter(
                 // final args = state.extra as Map<String, dynamic>;
                 return MyHomePage(title: 'Home',);
               },
+              routes: <RouteBase>[
+                GoRoute(
+                  path: 'meal-plan',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return MealPlannerApp();
+                  },
+                ),
+              ]
             ),
           ]
         ),
