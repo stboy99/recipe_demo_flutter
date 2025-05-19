@@ -32,7 +32,7 @@ final GoRouter router = GoRouter(
                 GoRoute(
                   path: 'meal-plan',
                   builder: (BuildContext context, GoRouterState state) {
-                    return MealPlannerApp();
+                    return MealCalendarScreen();
                   },
                 ),
               ]

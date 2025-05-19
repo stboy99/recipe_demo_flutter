@@ -1,20 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MealPlannerApp());
-}
-
-class MealPlannerApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Meal Planner',
-      theme: ThemeData(primarySwatch: Colors.teal),
-      home: MealCalendarScreen(),
-    );
-  }
-}
-
 class MealCalendarScreen extends StatefulWidget {
   @override
   _MealCalendarScreenState createState() => _MealCalendarScreenState();
