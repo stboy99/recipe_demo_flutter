@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:recipe_demo_flutter/features/recipe/model/recipe.dart';
 import 'package:recipe_demo_flutter/features/recipe/screens/recipe_update_create.dart';
-import 'package:recipe_demo_flutter/global_structure.dart';
 import 'package:recipe_demo_flutter/services/database_service.dart';
 import 'dart:io';
 
@@ -15,11 +14,19 @@ class RecipeDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlobalStructure(
-      title: recipe.title,
-      action: IconButton(
-        icon: Icon(Icons.delete),
-        onPressed: () => _deleteRecipe(context),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(recipe.title),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () => _navigateToEditRecipe(context),
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () => _deleteRecipe(context),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
@@ -60,7 +67,7 @@ class RecipeDetailScreen extends StatelessWidget {
   }
 
   void _navigateToEditRecipe(BuildContext context) {
-    context.push('/recipe-update-create', extra: {'recipe': recipe});
+    context.push('/recipe-list/recipe-update-create', extra: {'recipe': recipe});
   }
 
   void _deleteRecipe(BuildContext context) {

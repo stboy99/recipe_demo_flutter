@@ -28,6 +28,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _signInAnonymously() async {
     setState(() => _isLoading = true);
+    if(_isLoading){
+      showLoading();
+    }
     try {
       await FirebaseAuth.instance.signInAnonymously();
       Future.delayed(Duration(milliseconds: 190));
@@ -43,8 +46,21 @@ class _MyHomePageState extends State<MyHomePage> {
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
+        context.pop();
       }
     }
+  }
+
+
+  void showLoading(){
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => WillPopScope(
+        onWillPop: () async => false,
+        child: Center(child: CircularProgressIndicator()),
+      ),
+    );
   }
 void showSorryDialog(){
       if (mounted) {
@@ -74,6 +90,9 @@ Future<void> _signOut() async {
   context.pop();
   _nameController.text = '';
   setState(() => _isLoading = true);
+  if(_isLoading){
+    showLoading();
+  }
   try {
 
     await _clearLocalDatabase();
@@ -95,6 +114,7 @@ Future<void> _signOut() async {
   } finally {
     if (mounted) {
       setState(() => _isLoading = false);
+      context.pop();
     }
   }
 }
@@ -194,7 +214,7 @@ Future<void> _clearLocalDatabase() async {
                         _signInAnonymously();
                       }
                       else{
-                        context.push('/recipe-list');
+                        context.go('/recipe-list');
                       }
                     },
               style: ElevatedButton.styleFrom(
@@ -207,8 +227,9 @@ Future<void> _clearLocalDatabase() async {
                 ),
               ),
               child: _isLoading
-                  ? const CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(Colors.white),
+                  ? const Text(
+                      'Loading...',
+                      style: TextStyle(fontSize: 16),
                     )
                   : const Text(
                       'Get Started',
@@ -235,8 +256,10 @@ Future<void> _clearLocalDatabase() async {
 
   @override
   Widget build(BuildContext context) {
-    return GlobalStructure(
-      title: widget.title,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

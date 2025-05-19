@@ -9,7 +9,6 @@ import 'package:recipe_demo_flutter/features/recipe/model/recipe_type.dart';
 import 'package:recipe_demo_flutter/features/recipe/model/recipe.dart';
 import 'package:recipe_demo_flutter/features/recipe/screens/recipe_detail_screen.dart';
 import 'package:recipe_demo_flutter/features/recipe/screens/recipe_update_create.dart';
-import 'package:recipe_demo_flutter/global_structure.dart';
 import 'package:recipe_demo_flutter/services/database_service.dart';
 
 class RecipeListScreen extends StatefulWidget {
@@ -25,11 +24,15 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GlobalStructure(
-      title: 'Recipes',
-      action: IconButton(
-        icon: Icon(Icons.add),
-        onPressed: () => _navigateToAddRecipe(context),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Recipes'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => _navigateToAddRecipe(context),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -44,6 +47,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                   Expanded(
                     child: _buildTypeDropdown(),
                   ),
+                  SizedBox(width: 10),
                   Expanded(
                     flex: 2,
                     child: TextField(
@@ -135,10 +139,10 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   }
 
   void _navigateToAddRecipe(BuildContext context) {
-    context.push('/recipe-update-create');
+    context.push('/recipe-list/recipe-update-create');
   }
 
   void _navigateToRecipeDetail(BuildContext context, Recipe recipe) {
-    context.push('/recipe-detail', extra: {'recipe': recipe});
+    context.push('/recipe-list/recipe-detail', extra: {'recipe': recipe});
   }
 }

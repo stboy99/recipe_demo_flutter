@@ -6,7 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:recipe_demo_flutter/features/recipe/model/recipe.dart';
 import 'package:recipe_demo_flutter/features/recipe/model/recipe_type.dart';
-import 'package:recipe_demo_flutter/global_structure.dart';
 import 'package:recipe_demo_flutter/services/database_service.dart';
 import 'dart:io';
 
@@ -49,11 +48,15 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GlobalStructure(
-      title: widget.recipe == null ? 'Add Recipe' : 'Edit Recipe',
-      action: IconButton(
-        icon: Icon(Icons.save),
-        onPressed: _saveRecipe,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.recipe == null ? 'Add Recipe' : 'Edit Recipe'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: _saveRecipe,
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
@@ -281,7 +284,7 @@ Widget _buildTypeDropdown() {
       Future.microtask(() {
         if(mounted){
           context.push(
-            '/recipe-detail',
+            '/recipe-list/recipe-detail',
             extra: {'recipe': recipe},
           );
         }
