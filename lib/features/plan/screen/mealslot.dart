@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MealCalendarScreen extends StatefulWidget {
   @override
@@ -29,7 +30,7 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
         content: TextField(
           autofocus: true,
           decoration: InputDecoration(hintText: 'Enter recipe name'),
-          onSubmitted: Navigator.of(context).pop,
+          onSubmitted: GoRouter.of(context).pop
         ),
       ),
     );
@@ -46,6 +47,8 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
     return GestureDetector(
       onTap: () => _assignMeal(day, meal),
       child: Container(
+        height: 90,
+        width: 120,
         margin: EdgeInsets.symmetric(vertical: 4),
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
