@@ -49,20 +49,6 @@ class _GlobalStructureState extends State<GlobalStructure>{
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        centerTitle: true,
-        elevation: 4,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        actions: widget.action != null ? [widget.action!] : [],
-      ),
       body: widget.navigationShell,
       bottomNavigationBar: _isLogin && mounted ? 
       BottomNavigationBar(
