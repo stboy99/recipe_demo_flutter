@@ -92,7 +92,17 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Meal Planner'),
+        title: Text(
+          'Meal Planner',
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 4,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
