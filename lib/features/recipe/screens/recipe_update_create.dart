@@ -9,6 +9,8 @@ import 'package:recipe_demo_flutter/features/recipe/model/recipe_type.dart';
 import 'package:recipe_demo_flutter/services/database_service.dart';
 import 'dart:io';
 
+import 'package:recipe_demo_flutter/validator.dart';
+
 class AddEditRecipeScreen extends StatefulWidget {
   final Recipe? recipe;
 
@@ -83,7 +85,7 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
                   labelText: 'Recipe Title',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) => value!.isEmpty ? 'Please enter a title' : null,
+                validator: (value) => DynamicValidator('Please enter recipe title').msg(value)
               ),
               SizedBox(height: 16),
               _buildTypeDropdown(),
@@ -186,7 +188,7 @@ Widget _buildTypeDropdown() {
           labelText: 'Recipe Type',
           border: OutlineInputBorder(),
         ),
-        validator: (value) => value == null ? 'Please select a type' : null,
+        validator: (value) => DynamicValidator('Please select recipe type').msg(value),
       );
     },
   );
@@ -205,7 +207,7 @@ Widget _buildTypeDropdown() {
                   labelText: 'Ingredient ${index + 1}',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) => value!.isEmpty ? 'Please enter ingredient' : null,
+                validator: (value) => DynamicValidator('Please enter ingredient').msg(value)
               ),
             ),
           ),
@@ -236,7 +238,7 @@ Widget _buildTypeDropdown() {
                   labelText: 'Step ${index + 1}',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) => value!.isEmpty ? 'Please enter step' : null,
+                validator: (value) => DynamicValidator('Please enter step').msg(value)
               ),
             ),
           ),

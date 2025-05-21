@@ -46,40 +46,32 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children:[ 
-                Text('Hi! ${FirebaseAuth.instance.currentUser!.displayName}!'),
-                SizedBox(height: 20,),
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    if (constraints.maxWidth < 390) {
-                      // Stack vertically on narrow screens
-                      return Column(
-                        children: [
-                          _buildTypeDropdown(),
-                          SizedBox(height: 10),
-                          TextField(
-                            controller: _searchController,
-                            decoration: InputDecoration(
-                              labelText: 'Search',
-                              prefixIcon: Icon(Icons.search),
-                              border: OutlineInputBorder(),
-                            ),
-                            onChanged: (_) => setState(() {}),
-                          ),
-                        ],
-                      );
-                    } else {
-                      // Use row layout for wider screens
-                      return Row(
-                        children: [
-                          Expanded(child: _buildTypeDropdown()),
-                          SizedBox(width: 10),
-                          Expanded(
-                            flex: 2,
-                            child: TextField(
+          Card(
+            color: Colors.deepPurple.shade50,
+            elevation: 2,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children:[ 
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      '👋 Hello, ${FirebaseAuth.instance.currentUser?.displayName ?? 'Chef'}!',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  SizedBox(height: 20,),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (constraints.maxWidth < 390) {
+                        // Stack vertically on narrow screens
+                        return Column(
+                          children: [
+                            _buildTypeDropdown(),
+                            SizedBox(height: 10),
+                            TextField(
                               controller: _searchController,
                               decoration: InputDecoration(
                                 labelText: 'Search',
@@ -88,13 +80,33 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                               ),
                               onChanged: (_) => setState(() {}),
                             ),
-                          ),
-                        ],
-                      );
-                    }
-                  },
-                )
-              ]
+                          ],
+                        );
+                      } else {
+                        // Use row layout for wider screens
+                        return Row(
+                          children: [
+                            Expanded(child: _buildTypeDropdown()),
+                            SizedBox(width: 10),
+                            Expanded(
+                              flex: 2,
+                              child: TextField(
+                                controller: _searchController,
+                                decoration: InputDecoration(
+                                  labelText: 'Search',
+                                  prefixIcon: Icon(Icons.search),
+                                  border: OutlineInputBorder(),
+                                ),
+                                onChanged: (_) => setState(() {}),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                    },
+                  )
+                ]
+              ),
             ),
           ),
           Expanded(
@@ -150,7 +162,19 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
           return matchesType && matchesSearch;
         }).toList();
         if(filteredRecipes.isEmpty){
-          return Text('no recipe so far.. why dont you add some?');
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.sentiment_dissatisfied, size: 48, color: Colors.grey),
+                SizedBox(height: 12),
+                Text('No recipes yet...', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                SizedBox(height: 4),
+                Text('Why don’t you add some?', style: TextStyle(color: Colors.grey)),
+              ],
+            ),
+          );
+
         }
         return ListView.builder(
           itemCount: filteredRecipes.length,
