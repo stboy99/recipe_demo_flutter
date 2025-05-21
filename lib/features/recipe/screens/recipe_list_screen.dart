@@ -180,13 +180,15 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
           itemCount: filteredRecipes.length,
           itemBuilder: (context, index) {
             final recipe = filteredRecipes[index];
-            return ListTile(
-              leading: recipe.imagePath != null 
-                  ? Image.file(File(recipe.imagePath!), width: 50, height: 50, fit: BoxFit.cover)
-                  : Icon(Icons.fastfood, size: 50),
-              title: Text(recipe.title),
-              subtitle: Text(recipe.type.name),
-              onTap: () => _navigateToRecipeDetail(context, recipe),
+            return RepaintBoundary(
+              child: ListTile(
+                leading: recipe.imagePath != null 
+                    ? Image.file(File(recipe.imagePath!), width: 50, height: 50, fit: BoxFit.cover)
+                    : Icon(Icons.fastfood, size: 50),
+                title: Text(recipe.title),
+                subtitle: Text(recipe.type.name),
+                onTap: () => _navigateToRecipeDetail(context, recipe),
+              ),
             );
           },
         );
