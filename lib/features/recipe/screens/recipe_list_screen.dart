@@ -52,26 +52,48 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
               children:[ 
                 Text('Hi! ${FirebaseAuth.instance.currentUser!.displayName}!'),
                 SizedBox(height: 20,),
-                Row(
-                children: [
-                  Expanded(
-                    child: _buildTypeDropdown(),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    flex: 2,
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        labelText: 'Search',
-                        prefixIcon: Icon(Icons.search),
-                        border: OutlineInputBorder(),
-                      ),
-                      onChanged: (_) => setState(() {}),
-                    ),
-                  ),
-                ],
-              ),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    if (constraints.maxWidth < 390) {
+                      // Stack vertically on narrow screens
+                      return Column(
+                        children: [
+                          _buildTypeDropdown(),
+                          SizedBox(height: 10),
+                          TextField(
+                            controller: _searchController,
+                            decoration: InputDecoration(
+                              labelText: 'Search',
+                              prefixIcon: Icon(Icons.search),
+                              border: OutlineInputBorder(),
+                            ),
+                            onChanged: (_) => setState(() {}),
+                          ),
+                        ],
+                      );
+                    } else {
+                      // Use row layout for wider screens
+                      return Row(
+                        children: [
+                          Expanded(child: _buildTypeDropdown()),
+                          SizedBox(width: 10),
+                          Expanded(
+                            flex: 2,
+                            child: TextField(
+                              controller: _searchController,
+                              decoration: InputDecoration(
+                                labelText: 'Search',
+                                prefixIcon: Icon(Icons.search),
+                                border: OutlineInputBorder(),
+                              ),
+                              onChanged: (_) => setState(() {}),
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                  },
+                )
               ]
             ),
           ),
