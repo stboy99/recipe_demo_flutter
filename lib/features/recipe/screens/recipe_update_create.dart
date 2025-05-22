@@ -267,7 +267,6 @@ Widget _buildTypeDropdown() {
   }
 
   void _saveRecipe() {
-    // print(_selectedType);
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) throw Exception('User not logged in');
     if (_formKey.currentState!.validate() && _selectedType != null) {
