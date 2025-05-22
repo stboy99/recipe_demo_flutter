@@ -124,9 +124,9 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
     return Column(
       children: [
         _imageFile != null
-            ? Image.file(_imageFile!, height: 150, fit: BoxFit.cover, cacheWidth: 200,)
+            ? Image.file(_imageFile!, height: 150, fit: BoxFit.cover, cacheWidth: 200, filterQuality: FilterQuality.medium,)
             : widget.recipe?.imagePath != null
-                ? Image.file(File(widget.recipe!.imagePath!), height: 150, fit: BoxFit.cover, cacheWidth: 200,)
+                ? Image.file(File(widget.recipe!.imagePath!), height: 150, fit: BoxFit.cover, cacheWidth: 200, filterQuality: FilterQuality.medium,)
                 : Container(
                     height: 150,
                     color: Colors.grey[200],
