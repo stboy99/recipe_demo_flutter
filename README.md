@@ -10,7 +10,7 @@ based on the feedback given what i have done for the changes is that:
   - what i've done is that, i further add on some theme color and emojis for better ui looking
   - little loading screen and bottom navigation bar for better responsiveness.
 - overlay issue at the filter and search section
-  - i've add on, mediaquery checking, if maxwidth is not greater than 390, i will present it in Column approach, otherwise will remain row.
+  - i've add on, mediaquery checking. If maxwidth is not greater than 390, i will present it in Column approach, otherwise will remain row.
  
   - addtionally, i've made a little configuration on ios build and it is ready to build and run. kindly pod install after flutter pub get; use xcode -> open runner.xccodeworkspace -> try and see whether it can compile.
   - a validator file, to better scale if any new fields for recipe comming in.
