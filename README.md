@@ -5,6 +5,7 @@ based on the feedback given what i have done for the changes is that:
 
 -App is super laggy for unknown reason.
   - i noticed there are alot of jank load when i tried to view the app performance through dart: devtools by running in profile mode, for this what i have done is that, i added cachewidth for those image asset to optimize the image loads as much as possible, at the same time i've also addon 'repaintboundary' widget wipe for expensive widget. and also tried removal of those unwanted lines and logging.
+  - i've try optimise a bit of image quality to medium setting. if the uploaded image quality is high enough to be present, high setting might not be needed.
 - basic ui
   - what i've done is that, i further add on some theme color and emojis for better ui looking
   - little loading screen and bottom navigation bar for better responsiveness.
