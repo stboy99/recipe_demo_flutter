@@ -183,7 +183,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
             return RepaintBoundary(
               child: ListTile(
                 leading: recipe.imagePath != null 
-                    ? Image.file(File(recipe.imagePath!), width: 50, height: 50, fit: BoxFit.cover)
+                    ? Image.file(File(recipe.imagePath!), width: 50, height: 50, fit: BoxFit.cover, cacheWidth: 200,)
                     : Icon(Icons.fastfood, size: 50),
                 title: Text(recipe.title),
                 subtitle: Text(recipe.type.name),

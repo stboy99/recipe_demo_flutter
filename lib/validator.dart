@@ -8,6 +8,19 @@ class DynamicValidator implements Validator<dynamic> {
 
   @override
   String? msg(dynamic value) {
+    if (value == null) {
+      return message;
+    }
+    return null;
+  }
+}
+
+class TextValidator implements Validator<dynamic> {
+  final String message;
+  TextValidator(this.message);
+
+  @override
+  String? msg(dynamic value) {
     if (value == null || value.trim().isEmpty) {
       return message;
     }
