@@ -12,6 +12,6 @@ based on the feedback given what i have done for the changes is that:
   - i've add on, mediaquery checking, if maxwidth is not greater than 390, i will present it in Column approach, otherwise will remain row.
  
   - addtionally, i've made a little configuration on ios build and it is ready to build and run. kindly pod install after flutter pub get; use xcode -> open runner.xccodeworkspace -> try and see whether it can compile.
-    
+    - a validator file, to better scale if any new fields for recipe comming in.
 once again, thx for the oppotunity. 
 jia sian
