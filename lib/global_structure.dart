@@ -49,7 +49,48 @@ class _GlobalStructureState extends State<GlobalStructure>{
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      body: widget.navigationShell,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            pinned: true,
+            backgroundColor: Colors.transparent,
+            expandedHeight: 70,
+            flexibleSpace: LayoutBuilder(
+              builder: (context, constraints){
+                final top = constraints.biggest.height;
+                final isCollapsed = top <= kToolbarHeight + 10;
+                return Container(
+                  decoration: BoxDecoration(
+                    color: isCollapsed ? Colors.white.withOpacity(0.95) : Colors.transparent,
+                    boxShadow: isCollapsed ? [BoxShadow(color: Colors.black26, blurRadius: 4)] : [],
+                  ),
+                  child: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child:Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  )
+                );
+              }
+            ),
+          ),
+          SliverPadding(
+            padding: EdgeInsets.all(16.0),
+            sliver: SliverList(delegate: SliverChildListDelegate([widget.navigationShell]) ),
+          )
+        ],
+      ), 
       bottomNavigationBar: _isLogin && mounted ? 
       BottomNavigationBar(
           backgroundColor: Theme.of(context).colorScheme.primary,

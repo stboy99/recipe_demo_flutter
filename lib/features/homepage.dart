@@ -268,27 +268,13 @@ Future<void> _clearLocalDatabase() async {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        centerTitle: true,
-        elevation: 4,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-      ),
-      body: SafeArea(
+    return SafeArea(
         child: Center(
           child: SingleChildScrollView(
             child: _buildWelcomeCard(),
           ),
         ),
-      ),
-    );
+      );
+    
   }
 }
