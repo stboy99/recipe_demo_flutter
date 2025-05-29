@@ -9,6 +9,8 @@ import 'package:recipe_demo_flutter/features/recipe/model/recipe_type.dart';
 import 'package:recipe_demo_flutter/services/database_service.dart';
 import 'dart:io';
 
+import 'package:recipe_demo_flutter/validator.dart';
+
 class AddEditRecipeScreen extends StatefulWidget {
   final Recipe? recipe;
 
@@ -83,7 +85,7 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
                   labelText: 'Recipe Title',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) => value!.isEmpty ? 'Please enter a title' : null,
+                validator: (value) => TextValidator('Please enter recipe title').msg(value)
               ),
               SizedBox(height: 16),
               _buildTypeDropdown(),
@@ -122,9 +124,9 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
     return Column(
       children: [
         _imageFile != null
-            ? Image.file(_imageFile!, height: 150, fit: BoxFit.cover)
+            ? Image.file(_imageFile!, height: 150, fit: BoxFit.cover, cacheWidth: 200, filterQuality: FilterQuality.medium,)
             : widget.recipe?.imagePath != null
-                ? Image.file(File(widget.recipe!.imagePath!), height: 150, fit: BoxFit.cover)
+                ? Image.file(File(widget.recipe!.imagePath!), height: 150, fit: BoxFit.cover, cacheWidth: 200, filterQuality: FilterQuality.medium,)
                 : Container(
                     height: 150,
                     color: Colors.grey[200],
@@ -186,7 +188,7 @@ Widget _buildTypeDropdown() {
           labelText: 'Recipe Type',
           border: OutlineInputBorder(),
         ),
-        validator: (value) => value == null ? 'Please select a type' : null,
+        validator: (value) => DynamicValidator('Please select recipe type').msg(value),
       );
     },
   );
@@ -205,7 +207,7 @@ Widget _buildTypeDropdown() {
                   labelText: 'Ingredient ${index + 1}',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) => value!.isEmpty ? 'Please enter ingredient' : null,
+                validator: (value) => TextValidator('Please enter ingredient').msg(value)
               ),
             ),
           ),
@@ -236,7 +238,7 @@ Widget _buildTypeDropdown() {
                   labelText: 'Step ${index + 1}',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) => value!.isEmpty ? 'Please enter step' : null,
+                validator: (value) => TextValidator('Please enter step').msg(value)
               ),
             ),
           ),
@@ -265,7 +267,6 @@ Widget _buildTypeDropdown() {
   }
 
   void _saveRecipe() {
-    // print(_selectedType);
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) throw Exception('User not logged in');
     if (_formKey.currentState!.validate() && _selectedType != null) {

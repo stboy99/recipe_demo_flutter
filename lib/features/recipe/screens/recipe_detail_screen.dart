@@ -44,7 +44,7 @@ class RecipeDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             recipe.imagePath != null
-                ? Image.file(File(recipe.imagePath!), height: 200, width: double.infinity, fit: BoxFit.cover)
+                ? Image.file(File(recipe.imagePath!), height: 200, width: double.infinity, fit: BoxFit.cover, cacheWidth: 200, filterQuality: FilterQuality.medium, )
                 : Container(
                     height: 200,
                     color: Colors.grey[200],
