@@ -123,9 +123,11 @@ Future<void> _clearLocalDatabase() async {
   try {
     // Assuming the boxes are already opened elsewhere in your app
     final recipesBox = Hive.box<Recipe>('recipes');
+    final mealBox = Hive.box<Recipe>('mealPlans');
     // final settingsBox = Hive.box('recipeTypes');
 
     await recipesBox.clear();
+    await mealBox.clear();
     // await settingsBox.clear();
   } catch (e) {
     debugPrint('Failed to clear Hive boxes: $e');
@@ -212,39 +214,46 @@ Future<void> _clearLocalDatabase() async {
                   ),
                 ),
               const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _isLoading
+              InkWell(
+                onTap: _isLoading
                     ? null
                     : () {
                         if (FirebaseAuth.instance.currentUser == null) {
-                          if(_nameController.text.isEmpty){
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Can i get your beautiful name?')),
-                              );
-                              return;
+                          if (_nameController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Can I get your beautiful name?')),
+                            );
+                            return;
                           }
                           _signInAnonymously();
-                        }
-                        else{
+                        } else {
                           context.go('/recipe-list');
                         }
                       },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  foregroundColor: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  elevation: 3,
-                ),
-                child: _isLoading
-                    ? const Text(
-                        'Loading...',
-                        style: TextStyle(fontSize: 16),
-                      )
-                    : const Text(
-                        'Get Started',
-                        style: TextStyle(fontSize: 16),
+                  decoration: BoxDecoration(
+                    color: _isLoading ? Colors.deepPurple.withOpacity(0.5) : Colors.deepPurple,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
                       ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      _isLoading ? 'Loading...' : 'Get Started',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
               if(FirebaseAuth.instance.currentUser != null)

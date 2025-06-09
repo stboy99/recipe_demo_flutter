@@ -3,8 +3,8 @@ abstract class Validator<t> {
 }
 
 class DynamicValidator implements Validator<dynamic> {
-  final String message;
-  DynamicValidator(this.message);
+  final String message; //error message
+  DynamicValidator(this.message); 
 
   @override
   String? msg(dynamic value) {

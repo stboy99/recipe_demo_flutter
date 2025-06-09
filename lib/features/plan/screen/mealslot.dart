@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
+import 'package:recipe_demo_flutter/services/database_service.dart';
 
 class MealCalendarScreen extends StatefulWidget {
+  const MealCalendarScreen({super.key});
   @override
   _MealCalendarScreenState createState() => _MealCalendarScreenState();
 }
@@ -17,10 +22,40 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
   @override
   void initState() {
     super.initState();
-    for (var day in days) {
-      mealPlan[day] = {for (var meal in meals) meal: null};
+    loadMealPlans();
+    // for (var day in days) {
+    //   mealPlan[day] = {for (var meal in meals) meal: null};
+    // }
+  }
+
+  Future<void> loadMealPlans() async {
+    final raw = DatabaseService.mealPlanBox.get('mealPlans');
+
+    if (raw is Map) {
+      print('hi');
+      try {
+        final parsed = Map<String, Map<String, String?>>.from(
+          raw.map((day, meals) => MapEntry(
+            day.toString(),
+            Map<String, String?>.from((meals as Map).map(
+              (meal, recipe) => MapEntry(meal.toString(), recipe as String?),
+            )),
+          )),
+        );
+
+        setState(() {
+          mealPlan = parsed;
+        });
+        print('done convert');
+      } catch (e) {
+        print("Error parsing stored meal plan: $e");
+      }
+    } else {
+      print('Unexpected data format: ${raw.runtimeType}');
     }
   }
+
+
 
   void _assignMeal(String day, String meal) async {
     final result = await showDialog<String>(
@@ -39,10 +74,12 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
       setState(() {
         mealPlan[day]![meal] = result.trim();
       });
+      await savePlan();
     }
   }
 
   Widget _buildMealCell(String day, String meal) {
+    print('plan: $mealPlan');
     final recipe = mealPlan[day] != null ? mealPlan[day]![meal] : 'Tap to assign';
     return GestureDetector(
       onTap: () => _assignMeal(day, meal),
@@ -86,6 +123,12 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
       final day = monday.add(Duration(days: i));
       return "${day.month}/${day.day}"; // e.g. 5/15
     });
+  }
+
+  Future<void> savePlan() async{
+    // print(mealPlan);
+
+    await DatabaseService.mealPlanBox.put('mealPlans', mealPlan);
   }
 
   @override
