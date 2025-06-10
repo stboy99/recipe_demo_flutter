@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:recipe_demo_flutter/features/recipe/model/recipe.dart';
 import 'package:recipe_demo_flutter/features/recipe/screens/recipe_list_screen.dart';
 import 'package:recipe_demo_flutter/global_structure.dart';
+import 'package:recipe_demo_flutter/services/database_service.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -121,14 +122,8 @@ Future<void> _signOut() async {
 
 Future<void> _clearLocalDatabase() async {
   try {
-    // Assuming the boxes are already opened elsewhere in your app
-    final recipesBox = Hive.box<Recipe>('recipes');
-    final mealBox = Hive.box<Recipe>('mealPlans');
-    // final settingsBox = Hive.box('recipeTypes');
-
-    await recipesBox.clear();
-    await mealBox.clear();
-    // await settingsBox.clear();
+    await DatabaseService.recipesBox.clear();
+    await DatabaseService.mealPlanBox.clear();
   } catch (e) {
     debugPrint('Failed to clear Hive boxes: $e');
   }

@@ -17,43 +17,80 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
   // final List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   final List<String> meals = ['Breakfast', 'Lunch', 'Dinner'];
 
-  Map<String, Map<String, String?>> mealPlan = {};
+  // Map<String, Map<String, String?>> mealPlan = {};
+  Map<String, Map<String, Map<String, String?>>> allMealPlans = {};
+  String? currentWeekKey;
 
   @override
   void initState() {
     super.initState();
     loadMealPlans();
-    // for (var day in days) {
-    //   mealPlan[day] = {for (var meal in meals) meal: null};
-    // }
+    if (allMealPlans.containsKey(weekKey)) {
+      currentWeekKey = weekKey;
+    }
+  }
+
+  String get weekKey {
+    if (currentWeekKey != null) return currentWeekKey!;
+
+    final now = DateTime.now();
+    final monday = now.subtract(Duration(days: now.weekday - 1)).add(Duration(days: weekOffset * 7));
+    return "${monday.year}-${monday.month.toString().padLeft(2, '0')}-${monday.day.toString().padLeft(2, '0')}";
+  }
+
+
+  Map<String, Map<String, String?>> get mealPlan {
+    return allMealPlans[weekKey] ?? {};
   }
 
   Future<void> loadMealPlans() async {
+        // await DatabaseService.mealPlanBox.clear();
     final raw = DatabaseService.mealPlanBox.get('mealPlans');
-
+    print(raw);
     if (raw is Map) {
-      print('hi');
       try {
-        final parsed = Map<String, Map<String, String?>>.from(
-          raw.map((day, meals) => MapEntry(
-            day.toString(),
-            Map<String, String?>.from((meals as Map).map(
-              (meal, recipe) => MapEntry(meal.toString(), recipe as String?),
-            )),
-          )),
-        );
+        final Map<String, Map<String, Map<String, String?>>> parsed = {};
+
+        raw.forEach((week, dayMap) {
+          if (dayMap is Map) {
+            final convertedDays = <String, Map<String, String?>>{};
+
+            dayMap.forEach((day, meals) {
+              if (meals is Map) {
+                convertedDays[day.toString()] = meals.map((meal, value) =>
+                  MapEntry(meal.toString(), value?.toString()));
+              }
+            });
+
+            parsed[week.toString()] = convertedDays;
+          }
+        });
 
         setState(() {
-          mealPlan = parsed;
+          allMealPlans = parsed;
         });
-        print('done convert');
+
       } catch (e) {
-        print("Error parsing stored meal plan: $e");
+        print("Error parsing meal plans: $e");
       }
     } else {
       print('Unexpected data format: ${raw.runtimeType}');
     }
+
+    _ensureWeekInitialized();
   }
+
+
+  void _ensureWeekInitialized() {
+    final key = currentWeekKey ?? weekKey;
+
+    if (!allMealPlans.containsKey(key)) {
+      allMealPlans[key] = {
+        for (var day in days) day: {for (var meal in meals) meal: null}
+      };
+    }
+  }
+
 
 
 
@@ -72,14 +109,21 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
 
     if (result != null && result.trim().isNotEmpty) {
       setState(() {
-        mealPlan[day]![meal] = result.trim();
+        // Lock current week key if not already locked
+        currentWeekKey ??= weekKey;
+
+        // Ensure week is initialized
+        _ensureWeekInitialized();
+
+        allMealPlans[currentWeekKey]![day]![meal] = result.trim();
       });
       await savePlan();
     }
   }
 
   Widget _buildMealCell(String day, String meal) {
-    print('plan: $mealPlan');
+    // print('$day, $meal');
+    // print('plan: $mealPlan');
     final recipe = mealPlan[day] != null ? mealPlan[day]![meal] : 'Tap to assign';
     return GestureDetector(
       onTap: () => _assignMeal(day, meal),
@@ -89,6 +133,7 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
         margin: EdgeInsets.symmetric(vertical: 4),
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
+          color: recipe != null ? Colors.teal : Colors.transparent,
           border: Border.all(color: Colors.teal),
           borderRadius: BorderRadius.circular(8),
         ),
@@ -126,9 +171,7 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
   }
 
   Future<void> savePlan() async{
-    // print(mealPlan);
-
-    await DatabaseService.mealPlanBox.put('mealPlans', mealPlan);
+    await DatabaseService.mealPlanBox.put('mealPlans', allMealPlans);
   }
 
   @override
@@ -159,7 +202,28 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
                 children: [
                   IconButton(
                     icon: Icon(Icons.arrow_back),
-                    onPressed: () => setState(() => weekOffset--),
+                    onPressed: () {
+                      final today = DateTime.now();
+                      final todayWeekStart = today.subtract(Duration(days: today.weekday - 1));
+
+                      final viewedWeekStart = todayWeekStart.add(Duration(days: weekOffset * 7));
+
+                      final isCurrentWeek = todayWeekStart.year == viewedWeekStart.year &&
+                                            todayWeekStart.month == viewedWeekStart.month &&
+                                            todayWeekStart.day == viewedWeekStart.day;
+
+                      if (!isCurrentWeek) {
+                        setState(() {
+                          weekOffset--;
+                          currentWeekKey = null;
+                          _ensureWeekInitialized();
+                        });
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Already viewing current week. Not allowed to go back.')),
+                        );
+                      }
+                    }
                   ),
                   Text(
                     'Week of ${days.first} - ${days.last}',
@@ -167,7 +231,11 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
                   ),
                   IconButton(
                     icon: Icon(Icons.arrow_forward),
-                    onPressed: () => setState(() => weekOffset++),
+                    onPressed: () => setState(() {
+                        weekOffset++;
+                        currentWeekKey = null;
+                        _ensureWeekInitialized();
+                      }),
                   ),
                 ],
               ),
