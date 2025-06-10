@@ -1,10 +1,10 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive/hive.dart';
-import 'package:recipe_demo_flutter/features/recipe/model/recipe.dart';
-import 'package:recipe_demo_flutter/features/recipe/screens/recipe_list_screen.dart';
-import 'package:recipe_demo_flutter/global_structure.dart';
+import 'package:recipe_demo_flutter/helper.dart';
+import 'package:recipe_demo_flutter/services/database_service.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -19,11 +19,25 @@ class _MyHomePageState extends State<MyHomePage> {
   final User? user = FirebaseAuth.instance.currentUser;
   final TextEditingController _nameController = TextEditingController();
   bool _isLoading = false;
+  bool _isLogin = false;
+  late final StreamSubscription<User?> _authSubscription;
 
   @override
   void dispose() {
     _nameController.dispose();
+    _authSubscription.cancel();
     super.dispose();
+  }
+  @override
+  void initState(){
+    super.initState();
+    _isLogin = Helper.isUserLoggedIn();
+
+    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
+      setState(() {
+        _isLogin = user != null;
+      });
+    });
   }
 
   Future<void> _signInAnonymously() async {
@@ -121,12 +135,8 @@ Future<void> _signOut() async {
 
 Future<void> _clearLocalDatabase() async {
   try {
-    // Assuming the boxes are already opened elsewhere in your app
-    final recipesBox = Hive.box<Recipe>('recipes');
-    // final settingsBox = Hive.box('recipeTypes');
-
-    await recipesBox.clear();
-    // await settingsBox.clear();
+    await DatabaseService.recipesBox.clear();
+    await DatabaseService.mealPlanBox.clear();
   } catch (e) {
     debugPrint('Failed to clear Hive boxes: $e');
   }
@@ -212,39 +222,46 @@ Future<void> _clearLocalDatabase() async {
                   ),
                 ),
               const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _isLoading
+              InkWell(
+                onTap: _isLoading
                     ? null
                     : () {
                         if (FirebaseAuth.instance.currentUser == null) {
-                          if(_nameController.text.isEmpty){
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Can i get your beautiful name?')),
-                              );
-                              return;
+                          if (_nameController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Can I get your beautiful name?')),
+                            );
+                            return;
                           }
                           _signInAnonymously();
-                        }
-                        else{
+                        } else {
                           context.go('/recipe-list');
                         }
                       },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  foregroundColor: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  elevation: 3,
-                ),
-                child: _isLoading
-                    ? const Text(
-                        'Loading...',
-                        style: TextStyle(fontSize: 16),
-                      )
-                    : const Text(
-                        'Get Started',
-                        style: TextStyle(fontSize: 16),
+                  decoration: BoxDecoration(
+                    color: _isLoading ? Colors.deepPurple.withOpacity(0.5) : Colors.deepPurple,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
                       ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      _isLoading ? 'Loading...' : 'Get Started',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
               if(FirebaseAuth.instance.currentUser != null)
@@ -289,6 +306,14 @@ Future<void> _clearLocalDatabase() async {
           ),
         ),
       ),
+      floatingActionButton: _isLogin && mounted ?  FloatingActionButton(
+        onPressed: () {
+          context.push('/meal-plan');
+        },
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: const Icon(Icons.lock_clock, color: Colors.white,),
+      ): null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // Position
     );
   }
 }

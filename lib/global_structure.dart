@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:recipe_demo_flutter/helper.dart';
 
 class GlobalStructure extends StatefulWidget {
   final String title;
@@ -31,7 +32,7 @@ class _GlobalStructureState extends State<GlobalStructure>{
   @override
   void initState() {
     super.initState();
-    _isLogin = FirebaseAuth.instance.currentUser != null;
+    _isLogin = Helper.isUserLoggedIn();
 
     _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
       setState(() {

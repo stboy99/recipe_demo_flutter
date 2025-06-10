@@ -14,8 +14,10 @@ class DatabaseService {
     
     await Hive.openBox<RecipeType>('recipeTypes');
     await Hive.openBox<Recipe>('recipes');
+    await Hive.openBox('mealPlans');
   }
 
   static Box<RecipeType> get recipeTypesBox => Hive.box<RecipeType>('recipeTypes');
   static Box<Recipe> get recipesBox => Hive.box<Recipe>('recipes');
+  static Box get mealPlanBox => Hive.box('mealPlans');
 }
