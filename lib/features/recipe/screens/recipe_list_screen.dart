@@ -200,7 +200,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     context.push('/recipe-list/recipe-update-create');
   }
 
-  void _navigateToRecipeDetail(BuildContext context, Recipe recipe) {
+  static void _navigateToRecipeDetail(BuildContext context, Recipe recipe) {
     context.push('/recipe-list/recipe-detail', extra: {'recipe': recipe});
   }
 }
