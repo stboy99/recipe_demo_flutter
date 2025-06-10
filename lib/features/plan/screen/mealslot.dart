@@ -3,7 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
+import 'package:recipe_demo_flutter/features/plan/widget/recipe_dropdown.dart';
+import 'package:recipe_demo_flutter/features/recipe/model/recipe.dart';
+import 'package:recipe_demo_flutter/helper.dart';
 import 'package:recipe_demo_flutter/services/database_service.dart';
+import 'package:recipe_demo_flutter/widget/inkwell_button.dart';
 
 class MealCalendarScreen extends StatefulWidget {
   const MealCalendarScreen({super.key});
@@ -18,7 +22,7 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
   final List<String> meals = ['Breakfast', 'Lunch', 'Dinner'];
 
   // Map<String, Map<String, String?>> mealPlan = {};
-  Map<String, Map<String, Map<String, String?>>> allMealPlans = {};
+  Map<String, Map<String, Map<String, Recipe?>>> allMealPlans = {};
   String? currentWeekKey;
 
   @override
@@ -39,44 +43,15 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
   }
 
 
-  Map<String, Map<String, String?>> get mealPlan {
+  Map<String, Map<String, Recipe?>> get mealPlan {
     return allMealPlans[weekKey] ?? {};
   }
 
   Future<void> loadMealPlans() async {
-        // await DatabaseService.mealPlanBox.clear();
-    final raw = DatabaseService.mealPlanBox.get('mealPlans');
-    print(raw);
-    if (raw is Map) {
-      try {
-        final Map<String, Map<String, Map<String, String?>>> parsed = {};
-
-        raw.forEach((week, dayMap) {
-          if (dayMap is Map) {
-            final convertedDays = <String, Map<String, String?>>{};
-
-            dayMap.forEach((day, meals) {
-              if (meals is Map) {
-                convertedDays[day.toString()] = meals.map((meal, value) =>
-                  MapEntry(meal.toString(), value?.toString()));
-              }
-            });
-
-            parsed[week.toString()] = convertedDays;
-          }
-        });
-
-        setState(() {
-          allMealPlans = parsed;
-        });
-
-      } catch (e) {
-        print("Error parsing meal plans: $e");
-      }
-    } else {
-      print('Unexpected data format: ${raw.runtimeType}');
-    }
-
+    final Map<String, Map<String, Map<String, Recipe?>>> parsed = Helper.loadMealPlans();
+    setState(() {
+      allMealPlans = parsed;
+    });
     _ensureWeekInitialized();
   }
 
@@ -91,40 +66,90 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
     }
   }
 
-
-
-
   void _assignMeal(String day, String meal) async {
-    final result = await showDialog<String>(
+    Recipe? _selected = (mealPlan[day] != null && mealPlan[day]?[meal] != null) ? mealPlan[day]![meal] : null;
+
+    await showDialog<String>(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Assign Recipe'),
-        content: TextField(
-          autofocus: true,
-          decoration: InputDecoration(hintText: 'Enter recipe name'),
-          onSubmitted: GoRouter.of(context).pop
-        ),
-      ),
+      builder: (context) {
+        bool isReset = false;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            final selectedId = (mealPlan[day]?[meal] != null && !isReset)
+                ? mealPlan[day]![meal]!.id
+                : null;
+
+            return AlertDialog(
+              title: Text('Assign Recipe'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RecipeDropdown(
+                          selectedRecipeId: selectedId,
+                          onChanged: (recipe) {
+                            setState(() {
+                              _selected = recipe;
+                            });
+                          },
+                        ),
+                      ),
+                      if (mealPlan[day]?[meal] != null)
+                        SizedBox(
+                          width: 35,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                mealPlan[day]![meal] = null;
+                                _selected = null;
+                                isReset = true;
+                              });
+                            },
+                            child: Icon(
+                              Icons.close,
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  if (mealPlan[day]?[meal] != null) ...[
+                    SizedBox(height: 15),
+                    InkwellButton(
+                      onPressed: () {
+                        context.push('/recipe-list/recipe-detail',
+                            extra: {'recipe': mealPlan[day]![meal]});
+                        context.pop();
+                      },
+                      title: 'View Detail',
+                    ),
+                  ],
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
 
-    if (result != null && result.trim().isNotEmpty) {
+    print('selected: $_selected');
+
       setState(() {
-        // Lock current week key if not already locked
         currentWeekKey ??= weekKey;
-
-        // Ensure week is initialized
         _ensureWeekInitialized();
-
-        allMealPlans[currentWeekKey]![day]![meal] = result.trim();
+        allMealPlans[currentWeekKey]![day]![meal] = _selected;
       });
       await savePlan();
-    }
   }
+
 
   Widget _buildMealCell(String day, String meal) {
     // print('$day, $meal');
     // print('plan: $mealPlan');
-    final recipe = mealPlan[day] != null ? mealPlan[day]![meal] : 'Tap to assign';
+    final recipe = mealPlan[day] != null && mealPlan[day]![meal] != null ? mealPlan[day]![meal]?.title : 'Tap to assign';
     return GestureDetector(
       onTap: () => _assignMeal(day, meal),
       child: Container(
@@ -133,8 +158,8 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
         margin: EdgeInsets.symmetric(vertical: 4),
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: recipe != null ? Colors.teal : Colors.transparent,
-          border: Border.all(color: Colors.teal),
+          color: mealPlan[day] != null && mealPlan[day]![meal] != null ? Colors.green : Colors.transparent,
+          border: Border.all(color: Colors.green),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
@@ -192,12 +217,9 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:[ 
-              Row(
+        child: Column(
+          children:[ 
+                          Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   IconButton(
@@ -239,14 +261,35 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 10),
-              Row(
-                // mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: days.map((day) => _buildDayColumn(day)).toList(),
-              )
-            ],
+            SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children:[ 
+                SizedBox(height: 10),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: days.map((day) => _buildDayColumn(day)).toList(),
+                )
+              ],
+            ),
           ),
+          SizedBox(height: 20,),
+          Row(
+            children: [
+              Container(
+                width: 15,
+                height: 15,
+                decoration: BoxDecoration(
+                  color: Colors.green, // Optional fill color
+                  shape: BoxShape.circle,
+                ),
+              ),
+              SizedBox(width: 10,),
+              Text('Great! Assigned meal!')
+            ],
+          )
+          ]
         ),
       ),
     );

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:recipe_demo_flutter/helper.dart';
 import 'package:recipe_demo_flutter/services/database_service.dart';
+import 'package:recipe_demo_flutter/widget/inkwell_button.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -222,8 +223,8 @@ Future<void> _clearLocalDatabase() async {
                   ),
                 ),
               const SizedBox(height: 24),
-              InkWell(
-                onTap: _isLoading
+              InkwellButton(
+                onPressed: _isLoading
                     ? null
                     : () {
                         if (FirebaseAuth.instance.currentUser == null) {
@@ -237,31 +238,8 @@ Future<void> _clearLocalDatabase() async {
                         } else {
                           context.go('/recipe-list');
                         }
-                      },
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  decoration: BoxDecoration(
-                    color: _isLoading ? Colors.deepPurple.withOpacity(0.5) : Colors.deepPurple,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      _isLoading ? 'Loading...' : 'Get Started',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ),
+                      }, 
+                  title: _isLoading ? 'Loading...' : 'Get Started'
               ),
               const SizedBox(height: 16),
               if(FirebaseAuth.instance.currentUser != null)
