@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:recipe_demo_flutter/features/plan/widget/recipe_dropdown.dart';
 import 'package:recipe_demo_flutter/features/recipe/model/recipe.dart';
+import 'package:recipe_demo_flutter/helper.dart';
 import 'package:recipe_demo_flutter/services/database_service.dart';
 import 'package:recipe_demo_flutter/widget/inkwell_button.dart';
 
@@ -47,38 +48,10 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
   }
 
   Future<void> loadMealPlans() async {
-    final raw = DatabaseService.mealPlanBox.get('mealPlans');
-    print(raw);
-    if (raw is Map) {
-      try {
-        final Map<String, Map<String, Map<String, Recipe?>>> parsed = {};
-
-        raw.forEach((week, dayMap) {
-          if (dayMap is Map) {
-            final convertedDays = <String, Map<String, Recipe?>>{};
-
-            dayMap.forEach((day, meals) {
-              if (meals is Map) {
-                convertedDays[day.toString()] = meals.map((meal, value) =>
-                  MapEntry(meal.toString(), value));
-              }
-            });
-
-            parsed[week.toString()] = convertedDays;
-          }
-        });
-
-        setState(() {
-          allMealPlans = parsed;
-        });
-
-      } catch (e) {
-        print("Error parsing meal plans: $e");
-      }
-    } else {
-      print('Unexpected data format: ${raw.runtimeType}');
-    }
-
+    final Map<String, Map<String, Map<String, Recipe?>>> parsed = Helper.loadMealPlans();
+    setState(() {
+      allMealPlans = parsed;
+    });
     _ensureWeekInitialized();
   }
 
