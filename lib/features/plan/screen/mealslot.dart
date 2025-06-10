@@ -288,6 +288,22 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
               SizedBox(width: 10,),
               Text('Great! Assigned meal!')
             ],
+          ),
+          SizedBox(height: 5,),
+          Row(
+            children: [
+              Container(
+                width: 15,
+                height: 15,
+                decoration: BoxDecoration(
+                  color: Colors.transparent, // Optional fill color
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.black)
+                ),
+              ),
+              SizedBox(width: 10,),
+              Text('Waiting for assign meal...')
+            ],
           )
           ]
         ),
