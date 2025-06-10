@@ -241,47 +241,6 @@ Future<void> _clearLocalDatabase() async {
                       }, 
                   title: _isLoading ? 'Loading...' : 'Get Started'
               ),
-              // InkWell(
-              //   onTap: _isLoading
-              //       ? null
-              //       : () {
-              //           if (FirebaseAuth.instance.currentUser == null) {
-              //             if (_nameController.text.isEmpty) {
-              //               ScaffoldMessenger.of(context).showSnackBar(
-              //                 const SnackBar(content: Text('Can I get your beautiful name?')),
-              //               );
-              //               return;
-              //             }
-              //             _signInAnonymously();
-              //           } else {
-              //             context.go('/recipe-list');
-              //           }
-              //         },
-              //   borderRadius: BorderRadius.circular(12),
-              //   child: Container(
-              //     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              //     decoration: BoxDecoration(
-              //       color: _isLoading ? Colors.deepPurple.withOpacity(0.5) : Colors.deepPurple,
-              //       borderRadius: BorderRadius.circular(12),
-              //       boxShadow: [
-              //         BoxShadow(
-              //           color: Colors.black.withOpacity(0.2),
-              //           blurRadius: 4,
-              //           offset: const Offset(0, 2),
-              //         ),
-              //       ],
-              //     ),
-              //     child: Center(
-              //       child: Text(
-              //         _isLoading ? 'Loading...' : 'Get Started',
-              //         style: const TextStyle(
-              //           color: Colors.white,
-              //           fontSize: 16,
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // ),
               const SizedBox(height: 16),
               if(FirebaseAuth.instance.currentUser != null)
               TextButton(

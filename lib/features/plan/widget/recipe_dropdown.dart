@@ -25,6 +25,7 @@ class RecipeDropdown extends StatelessWidget {
       valueListenable: DatabaseService.recipesBox.listenable(),
       builder: (context, box, _) {
         final recipes = box.values.where((r) => r.userId == user.uid).toList();
+        final isDisabled = selectedRecipeId != null;
 
         return DropdownButtonFormField<String>(
           value: selectedRecipeId,
@@ -38,7 +39,9 @@ class RecipeDropdown extends StatelessWidget {
               child: Text(recipe.title),
             );
           }).toList(),
-          onChanged: (value) {
+          onChanged: isDisabled 
+          ? null 
+          : (value) {
             Recipe? selected;
             try {
               selected = recipes.firstWhere((r) => r.id == value);

@@ -47,7 +47,6 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
   }
 
   Future<void> loadMealPlans() async {
-        // await DatabaseService.mealPlanBox.clear();
     final raw = DatabaseService.mealPlanBox.get('mealPlans');
     print(raw);
     if (raw is Map) {
@@ -94,51 +93,85 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
     }
   }
 
-
-
-
   void _assignMeal(String day, String meal) async {
-    Recipe? _selected;
+    Recipe? _selected = (mealPlan[day] != null && mealPlan[day]?[meal] != null) ? mealPlan[day]![meal] : null;
+
     await showDialog<String>(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Assign Recipe'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RecipeDropdown(selectedRecipeId: mealPlan[day] != null && mealPlan[day]![meal] != null ? mealPlan[day]![meal]!.id : null, onChanged: (recipe){
-              setState(() {
-                _selected = recipe;
-              });
-            },),
-            if(mealPlan[day] != null && mealPlan[day]![meal] != null)
-            SizedBox(height: 15,),
-            InkwellButton(
-              onPressed: (){
-                context.push('/recipe-list/recipe-detail', extra: {'recipe': mealPlan[day]![meal]});
-                context.pop();
-              }, 
-              title: 'view detail'
-            ),
-          ],
-        )
-      ),
+      builder: (context) {
+        bool isReset = false;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            final selectedId = (mealPlan[day]?[meal] != null && !isReset)
+                ? mealPlan[day]![meal]!.id
+                : null;
+
+            return AlertDialog(
+              title: Text('Assign Recipe'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RecipeDropdown(
+                          selectedRecipeId: selectedId,
+                          onChanged: (recipe) {
+                            setState(() {
+                              _selected = recipe;
+                            });
+                          },
+                        ),
+                      ),
+                      if (mealPlan[day]?[meal] != null)
+                        SizedBox(
+                          width: 35,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                mealPlan[day]![meal] = null;
+                                _selected = null;
+                                isReset = true;
+                              });
+                            },
+                            child: Icon(
+                              Icons.close,
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  if (mealPlan[day]?[meal] != null) ...[
+                    SizedBox(height: 15),
+                    InkwellButton(
+                      onPressed: () {
+                        context.push('/recipe-list/recipe-detail',
+                            extra: {'recipe': mealPlan[day]![meal]});
+                        context.pop();
+                      },
+                      title: 'view detail',
+                    ),
+                  ],
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
+
     print('selected: $_selected');
 
-    if (_selected != null && _selected!.title.trim().isNotEmpty) {
       setState(() {
-        // Lock current week key if not already locked
         currentWeekKey ??= weekKey;
-
-        // Ensure week is initialized
         _ensureWeekInitialized();
-
         allMealPlans[currentWeekKey]![day]![meal] = _selected;
       });
       await savePlan();
-    }
   }
+
 
   Widget _buildMealCell(String day, String meal) {
     // print('$day, $meal');
