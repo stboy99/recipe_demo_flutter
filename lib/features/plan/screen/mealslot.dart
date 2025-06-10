@@ -124,7 +124,7 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
                             extra: {'recipe': mealPlan[day]![meal]});
                         context.pop();
                       },
-                      title: 'view detail',
+                      title: 'View Detail',
                     ),
                   ],
                 ],
@@ -158,8 +158,8 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
         margin: EdgeInsets.symmetric(vertical: 4),
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: mealPlan[day] != null && mealPlan[day]![meal] != null ? Colors.teal : Colors.transparent,
-          border: Border.all(color: Colors.teal),
+          color: mealPlan[day] != null && mealPlan[day]![meal] != null ? Colors.green : Colors.transparent,
+          border: Border.all(color: Colors.green),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
@@ -217,12 +217,9 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:[ 
-              Row(
+        child: Column(
+          children:[ 
+                          Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   IconButton(
@@ -264,14 +261,35 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 10),
-              Row(
-                // mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: days.map((day) => _buildDayColumn(day)).toList(),
-              )
-            ],
+            SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children:[ 
+                SizedBox(height: 10),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: days.map((day) => _buildDayColumn(day)).toList(),
+                )
+              ],
+            ),
           ),
+          SizedBox(height: 20,),
+          Row(
+            children: [
+              Container(
+                width: 15,
+                height: 15,
+                decoration: BoxDecoration(
+                  color: Colors.green, // Optional fill color
+                  shape: BoxShape.circle,
+                ),
+              ),
+              SizedBox(width: 10,),
+              Text('Great! Assigned meal!')
+            ],
+          )
+          ]
         ),
       ),
     );
