@@ -1,10 +1,9 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive/hive.dart';
-import 'package:recipe_demo_flutter/features/recipe/model/recipe.dart';
-import 'package:recipe_demo_flutter/features/recipe/screens/recipe_list_screen.dart';
-import 'package:recipe_demo_flutter/global_structure.dart';
+import 'package:recipe_demo_flutter/helper.dart';
 import 'package:recipe_demo_flutter/services/database_service.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -20,11 +19,25 @@ class _MyHomePageState extends State<MyHomePage> {
   final User? user = FirebaseAuth.instance.currentUser;
   final TextEditingController _nameController = TextEditingController();
   bool _isLoading = false;
+  bool _isLogin = false;
+  late final StreamSubscription<User?> _authSubscription;
 
   @override
   void dispose() {
     _nameController.dispose();
+    _authSubscription.cancel();
     super.dispose();
+  }
+  @override
+  void initState(){
+    super.initState();
+    _isLogin = Helper.isUserLoggedIn();
+
+    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
+      setState(() {
+        _isLogin = user != null;
+      });
+    });
   }
 
   Future<void> _signInAnonymously() async {
@@ -293,13 +306,13 @@ Future<void> _clearLocalDatabase() async {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: _isLogin && mounted ?  FloatingActionButton(
         onPressed: () {
           context.push('/meal-plan');
         },
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: const Icon(Icons.lock_clock, color: Colors.white,),
-      ),
+      ): null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // Position
     );
   }
