@@ -3,17 +3,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 Future<List<Map<String, dynamic>>> fetchDeepSeekRecipeSuggestions({
-  required List<String> recentMeals,
-  required List<String> preferences,
   required String mealType,
 }) async {
   final apiKey = dotenv.env['DEEPSEEK_API_KEY'];
   final prompt = '''
 You are a smart recipe assistant.
-
-The user recently ate: ${recentMeals.join(", ")}.
-They prefer: ${preferences.join(", ")}.
-
 Suggest 5 new $mealType recipes they might enjoy. Each recipe should include:
 - Name
 - One-line description
