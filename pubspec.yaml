@@ -37,7 +37,8 @@ dependencies:
   go_router: ^15.1.2
   firebase_core: ^3.12.1
   firebase_auth: ^5.5.1
-  
+  flutter_native_splash: ^2.4.6
+  flutter_launcher_icons: ^0.14.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -53,7 +54,24 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+flutter_native_splash:
+  color: "#ffffff" # or match your app theme
+  image: assets/images/demo_icon.png
+  android: true
+  ios: true
+  android_gravity: center
+  ios_content_mode: center
+  android_12:
+    image: assets/images/demo_icon.png
+    icon_background_color: "#ffffff"
+    image_dark: assets/images/demo_icon.png
+    icon_background_color_dark: "#121212"
 
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/demo_icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
 # The following section is specific to Flutter packages.
 flutter:
 
@@ -63,7 +81,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/recipetypes.json
-
+    - assets/images/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
