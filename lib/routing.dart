@@ -73,35 +73,3 @@ final GoRouter router = GoRouter(
           
       ],
     );
-    // GoRoute(
-    //   path: '/',
-    //   builder: (BuildContext context, GoRouterState state) {
-    //     // final args = state.extra as Map<String, dynamic>;
-    //     return MyHomePage(title: 'Home',);
-    //   },
-    // ),
-    // GoRoute(
-    //   path: 'recipe-list',
-    //   builder: (BuildContext context, GoRouterState state) {
-    //     return const RecipeListScreen();
-    //   },    
-    //   routes: <RouteBase>[
-    //     GoRoute(
-    //       path: 'recipe-detail',
-    //       builder: (BuildContext context, GoRouterState state) {
-    //         final args = state.extra as Map<String, dynamic>;
-    //         return RecipeDetailScreen(recipe: args['recipe'],);
-    //       },
-    //     ),
-    //     GoRoute(
-    //       path: 'recipe-update-create',
-    //       builder: (BuildContext context, GoRouterState state) {
-    //         final args = state.extra as Map<String, dynamic>?;
-    //         if(args != null){
-    //           return AddEditRecipeScreen(recipe: args['recipe'],);
-    //         }
-    //         return AddEditRecipeScreen();
-    //       },
-    //     ),
-    //   ],
-    // ),
