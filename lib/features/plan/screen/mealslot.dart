@@ -6,7 +6,7 @@ import 'package:hive/hive.dart';
 import 'package:recipe_demo_flutter/features/plan/widget/recipe_dropdown.dart';
 import 'package:recipe_demo_flutter/features/recipe/model/recipe.dart';
 import 'package:recipe_demo_flutter/helper.dart';
-import 'package:recipe_demo_flutter/recipe_deepseek.dart';
+import 'package:recipe_demo_flutter/api.dart';
 import 'package:recipe_demo_flutter/services/database_service.dart';
 import 'package:recipe_demo_flutter/widget/inkwell_button.dart';
 
@@ -309,37 +309,37 @@ class _MealCalendarScreenState extends State<MealCalendarScreen> {
           SizedBox(
             height: 50,
           ),
-          FutureBuilder<dynamic>(
-            future: fetchDeepSeekRecipeSuggestions(mealType: 'dinner'),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else if (snapshot.hasData) {
-                final recipes = snapshot.data!;
+          // FutureBuilder<dynamic>(
+          //   future: fetchDeepSeekRecipeSuggestions(mealType: 'dinner'),
+          //   builder: (context, snapshot) {
+          //     if (snapshot.connectionState == ConnectionState.waiting) {
+          //       return const CircularProgressIndicator();
+          //     } else if (snapshot.hasError) {
+          //       return Text('Error: ${snapshot.error}');
+          //     } else if (snapshot.hasData) {
+          //       final recipes = snapshot.data!;
 
-                // 🔍 Print the whole result to console
-                for (final recipe in recipes) {
-                  print('Recipe: $recipe'); // if `toJson()` exists
-                  // or just print fields like:
-                  // print('Recipe: id=${recipe.id}, title=${recipe.title}');
-                }
+          //       // 🔍 Print the whole result to console
+          //       for (final recipe in recipes) {
+          //         print('Recipe: $recipe'); // if `toJson()` exists
+          //         // or just print fields like:
+          //         // print('Recipe: id=${recipe.id}, title=${recipe.title}');
+          //       }
 
-                return ListView.builder(
-                  itemCount: recipes.length,
-                  itemBuilder: (context, index) {
-                    final recipe = recipes[index];
-                    return ListTile(
-                      title: Text(recipe.title),
-                    );
-                  },
-                );
-              } else {
-                return const Text('No data');
-              }
-            },
-          )
+          //       return ListView.builder(
+          //         itemCount: recipes.length,
+          //         itemBuilder: (context, index) {
+          //           final recipe = recipes[index];
+          //           return ListTile(
+          //             title: Text(recipe.title),
+          //           );
+          //         },
+          //       );
+          //     } else {
+          //       return const Text('No data');
+          //     }
+          //   },
+          // )
           ]
         ),
       ),

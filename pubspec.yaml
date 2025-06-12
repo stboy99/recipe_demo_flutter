@@ -40,6 +40,9 @@ dependencies:
   flutter_dotenv: ^5.2.1
   flutter_native_splash: ^2.4.6
   flutter_launcher_icons: ^0.14.4
+  http: ^1.4.0
+  geolocator: ^14.0.1
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
