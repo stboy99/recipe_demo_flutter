@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import '../features/recipe/model/recipe.dart';
 import '../features/recipe/model/recipe_type.dart';
+//3k
 
 class DatabaseService {
   static Future<void> init() async {
@@ -14,6 +15,7 @@ class DatabaseService {
     
     await Hive.openBox<RecipeType>('recipeTypes');
     await Hive.openBox<Recipe>('recipes');
+    await Hive.openBox<Recipe>('note');
     await Hive.openBox('mealPlans');
   }
 
