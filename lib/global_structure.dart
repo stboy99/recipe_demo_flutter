@@ -74,6 +74,10 @@ class _GlobalStructureState extends State<GlobalStructure>{
               icon: Icon(Icons.restaurant_menu),
               label: 'Recipes',
             ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.note_add),
+              label: 'Notes',
+            ),
           ],
           currentIndex: widget.navigationShell.currentIndex,
           onTap: (int index) => _onTap(context, index),

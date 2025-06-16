@@ -138,6 +138,7 @@ Future<void> _clearLocalDatabase() async {
   try {
     await DatabaseService.recipesBox.clear();
     await DatabaseService.mealPlanBox.clear();
+    await DatabaseService.noteBox.clear();
   } catch (e) {
     debugPrint('Failed to clear Hive boxes: $e');
   }
