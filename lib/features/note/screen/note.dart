@@ -13,13 +13,6 @@ class NotesPage extends StatefulWidget {
 class _NotesPageState extends State<NotesPage> {
   final TextEditingController _controller = TextEditingController();
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    _controller.dispose();
-  }
-  
   void _addNote() {
     if (_controller.text.trim().isEmpty) return;
 
@@ -33,39 +26,106 @@ class _NotesPageState extends State<NotesPage> {
     _controller.clear();
   }
 
-  void _deleteNote(String id) {
-    DatabaseService.noteBox.delete(id);
-  }
-
-  Widget _buildNoteList() {
-    return ValueListenableBuilder(
-      valueListenable: DatabaseService.noteBox.listenable(),
-      builder: (context, Box<Note> box, _) {
-        if (box.values.isEmpty) {
-          return Center(child: Text('No notes yet.'));
-        }
-
-        final notes = box.values.toList();
-
-        return ListView.builder(
-          itemCount: notes.length,
-          itemBuilder: (context, index) {
-            final note = notes[index];
-            return ListTile(
-              title: Text(note.content),
-              subtitle: Text(
-                'Added on ${note.createdAt.toLocal().toString().split(' ')[0]}',
-              ),
-              trailing: IconButton(
-                icon: Icon(Icons.delete, color: Colors.red),
-                onPressed: () => _deleteNote(note.id),
-              ),
-            );
-          },
+  void _editNote(Note note) async {
+    final result = await showDialog<String>(
+      context: context,
+      builder: (context) {
+        final editController = TextEditingController(text: note.content);
+        return AlertDialog(
+          title: const Text('Edit Note'),
+          content: TextField(
+            controller: editController,
+            maxLines: null,
+            decoration: const InputDecoration(
+              hintText: 'Update your note...',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, null),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, editController.text.trim()),
+              child: const Text('Save'),
+            ),
+          ],
         );
       },
     );
+
+    if (result != null && result.isNotEmpty) {
+      final updatedNote = Note(
+        id: note.id,
+        content: result,
+        createdAt: note.createdAt,
+      );
+      DatabaseService.noteBox.put(note.id, updatedNote);
+    }
   }
+
+Widget _buildNoteList() {
+  return ValueListenableBuilder(
+    valueListenable: DatabaseService.noteBox.listenable(),
+    builder: (context, Box<Note> box, _) {
+      if (box.values.isEmpty) {
+        return const Center(child: Text('No notes yet.'));
+      }
+
+      final notes = box.values.toList().reversed.toList();
+
+      return Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 4),
+            child: Text(
+              'Tip: Swipe a note to delete it',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(12),
+              itemCount: notes.length,
+              itemBuilder: (context, index) {
+                final note = notes[index];
+
+                return Dismissible(
+                  key: Key(note.id),
+                  direction: DismissDirection.endToStart,
+                  background: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: const Icon(Icons.delete, color: Colors.white),
+                  ),
+                  onDismissed: (_) {
+                    DatabaseService.noteBox.delete(note.id);
+                  },
+                  child: GestureDetector(
+                    onTap: () => _editNote(note),
+                    child: Card(
+                      margin: const EdgeInsets.symmetric(vertical: 6),
+                      child: ListTile(
+                        title: Text(note.content),
+                        subtitle: Text(
+                          'Added on ${note.createdAt.toLocal().toString().split(' ')[0]}',
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +156,7 @@ class _NotesPageState extends State<NotesPage> {
                       hintText: 'Write a new note...',
                       border: OutlineInputBorder(),
                     ),
+                    onSubmitted: (_) => _addNote(),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -106,9 +167,7 @@ class _NotesPageState extends State<NotesPage> {
               ],
             ),
           ),
-          Expanded(
-            child: _buildNoteList(),
-          ),
+          Expanded(child: _buildNoteList()),
         ],
       ),
     );
