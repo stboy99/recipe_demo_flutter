@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:recipe_demo_flutter/features/homepage.dart';
+import 'package:recipe_demo_flutter/features/note/screen/note.dart';
 import 'package:recipe_demo_flutter/features/plan/screen/mealslot.dart';
 import 'package:recipe_demo_flutter/features/recipe/screens/recipe_detail_screen.dart';
 import 'package:recipe_demo_flutter/features/recipe/screens/recipe_list_screen.dart';
@@ -26,13 +27,13 @@ final GoRouter router = GoRouter(
               path: '/',
               builder: (BuildContext context, GoRouterState state) {
                 // final args = state.extra as Map<String, dynamic>;
-                return MyHomePage(title: 'Home',);
+                return const MyHomePage(title: 'Home',);
               },
               routes: <RouteBase>[
                 GoRoute(
                   path: 'meal-plan',
                   builder: (BuildContext context, GoRouterState state) {
-                    return MealCalendarScreen();
+                    return const MealCalendarScreen();
                   },
                 ),
               ]
@@ -66,6 +67,16 @@ final GoRouter router = GoRouter(
                 ),
               ],
             ),
+          ]
+        ),
+        StatefulShellBranch(
+          routes: <RouteBase>[
+            GoRoute(
+              path: '/note',
+              builder: (BuildContext context, GoRouterState state) {
+                return const NotesPage();
+              },    
+            )
           ]
         )
       ]
