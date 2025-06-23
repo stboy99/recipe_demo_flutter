@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:recipe_demo_flutter/features/color/color.dart';
 import 'package:recipe_demo_flutter/features/homepage.dart';
 import 'package:recipe_demo_flutter/features/note/screen/note.dart';
 import 'package:recipe_demo_flutter/features/plan/screen/mealslot.dart';
@@ -75,6 +76,16 @@ final GoRouter router = GoRouter(
               path: '/note',
               builder: (BuildContext context, GoRouterState state) {
                 return const NotesPage();
+              },    
+            )
+          ]
+        ),
+        StatefulShellBranch(
+          routes: <RouteBase>[
+            GoRoute(
+              path: '/color',
+              builder: (BuildContext context, GoRouterState state) {
+                return const OutfitColorPicker();
               },    
             )
           ]

@@ -55,14 +55,6 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children:[ 
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      '👋 Hello, ${FirebaseAuth.instance.currentUser?.displayName ?? 'Chef'}!',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  SizedBox(height: 20,),
                   LayoutBuilder(
                     builder: (context, constraints) {
                       if (constraints.maxWidth < 390) {
